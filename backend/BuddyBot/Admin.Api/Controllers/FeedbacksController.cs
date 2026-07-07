@@ -41,9 +41,9 @@ public class FeedbacksController : ControllerBase
 
     [HttpPost]
     public async Task<ActionResult<FeedbackListDto>> CreateFeedback(
-    [FromBody] CreateFeedbackCommand command,
-    [FromServices] ICommandHandlerWithResult<CreateFeedbackCommand, Feedback> commandHandler,
-    [FromServices] IMapper mapper )
+        [FromBody] CreateFeedbackCommand command,
+        [FromServices] ICommandHandlerWithResult<CreateFeedbackCommand, Feedback> commandHandler,
+        [FromServices] IMapper mapper )
     {
         Result<Feedback> result = await commandHandler.HandleAsync( command );
 

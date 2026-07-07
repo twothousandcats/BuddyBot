@@ -18,15 +18,14 @@ namespace Admin.Api.Controllers;
 [ApiController]
 [Route( "api/teams" )]
 [Authorize]
-
 public class TeamsController : ControllerBase
 {
     [HttpGet]
     [Authorize( Policy = nameof( PermissionName.TeamView ) )]
     public async Task<ActionResult<PagedResult<TeamListDto>>> GetTeams(
-            [FromQuery] GetTeamsQuery query,
-            [FromServices] IQueryHandler<PagedResult<Team>, GetTeamsQuery> queryHandler,
-            [FromServices] IMapper mapper )
+        [FromQuery] GetTeamsQuery query,
+        [FromServices] IQueryHandler<PagedResult<Team>, GetTeamsQuery> queryHandler,
+        [FromServices] IMapper mapper )
     {
         Result<PagedResult<Team>> result = await queryHandler.HandleAsync( query );
 
@@ -45,9 +44,9 @@ public class TeamsController : ControllerBase
     [HttpGet( "{id}" )]
     [Authorize( Policy = nameof( PermissionName.TeamView ) )]
     public async Task<ActionResult<TeamListDto>> GetTeamById(
-            [FromRoute] int id,
-            [FromServices] IQueryHandler<Team, GetTeamByIdQuery> queryHandler,
-            [FromServices] IMapper mapper )
+        [FromRoute] int id,
+        [FromServices] IQueryHandler<Team, GetTeamByIdQuery> queryHandler,
+        [FromServices] IMapper mapper )
     {
         GetTeamByIdQuery query = new GetTeamByIdQuery
         {
@@ -86,10 +85,10 @@ public class TeamsController : ControllerBase
     [HttpPut( "{id}" )]
     [Authorize( Policy = nameof( PermissionName.TeamUpdate ) )]
     public async Task<ActionResult<TeamListDto>> UpdateTeam(
-            [FromRoute] int id,
-            [FromBody] UpdateTeamCommand command,
-            [FromServices] ICommandHandlerWithResult<UpdateTeamCommand, Team> commandHandler,
-            [FromServices] IMapper mapper )
+        [FromRoute] int id,
+        [FromBody] UpdateTeamCommand command,
+        [FromServices] ICommandHandlerWithResult<UpdateTeamCommand, Team> commandHandler,
+        [FromServices] IMapper mapper )
     {
         command.Id = id;
 
@@ -125,8 +124,8 @@ public class TeamsController : ControllerBase
     [HttpDelete( "{id}" )]
     [Authorize( Policy = nameof( PermissionName.TeamDelete ) )]
     public async Task<ActionResult<string>> DeleteTeam(
-    [FromRoute] int id,
-    [FromServices] ICommandHandlerWithResult<DeleteTeamCommand, string> commandHandler )
+        [FromRoute] int id,
+        [FromServices] ICommandHandlerWithResult<DeleteTeamCommand, string> commandHandler )
     {
         DeleteTeamCommand command = new DeleteTeamCommand
         {

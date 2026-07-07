@@ -11,7 +11,7 @@ public class MediaController : ControllerBase
     private const long MaxFileSizeBytes = 50 * 1024 * 1024;
 
     [HttpPost( "upload" )]
-    public async Task<ActionResult<string>> Upload( 
+    public async Task<ActionResult<string>> Upload(
         IFormFile file,
         [FromServices] IFileStorageService storage )
     {

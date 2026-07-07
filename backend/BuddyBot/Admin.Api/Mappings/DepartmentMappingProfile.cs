@@ -11,13 +11,13 @@ public class DepartmentMappingProfile : Profile
         CreateMap<Department, DepartmentLookupDto>();
 
         CreateMap<Department, DepartmentListDto>()
-            .ForMember( dest => dest.TeamCount, 
+            .ForMember( dest => dest.TeamCount,
                 opt => opt.MapFrom( src => src.Teams.Count ) )
-            .ForMember( dest => dest.IsVideoGreetingUploaded, 
+            .ForMember( dest => dest.IsVideoGreetingUploaded,
                 opt => opt.MapFrom( src => !string.IsNullOrEmpty( src.HeadVideoUrl ) ) );
 
         CreateMap<Department, DepartmentDetailDto>()
-                .ForMember( dest => dest.Teams, 
-                    opt => opt.MapFrom( src => src.Teams ) );
+            .ForMember( dest => dest.Teams,
+                opt => opt.MapFrom( src => src.Teams ) );
     }
 }

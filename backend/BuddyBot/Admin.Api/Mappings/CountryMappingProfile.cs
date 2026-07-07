@@ -11,7 +11,7 @@ public class CountryMappingProfile : Profile
         CreateMap<Country, CountryLookupDto>();
 
         CreateMap<Country, CountryListDto>()
-            .ForMember( dest => dest.CitiesCount, 
+            .ForMember( dest => dest.CitiesCount,
                 opt => opt.MapFrom( src => src.Cities.Count ) );
 
         CreateMap<Country, CountryDetailDto>()

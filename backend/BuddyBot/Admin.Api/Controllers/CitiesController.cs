@@ -21,9 +21,9 @@ public class CitiesController : ControllerBase
 {
     [HttpGet]
     public async Task<ActionResult<PagedResult<CityListDto>>> GetCities(
-            [FromQuery] GetCitiesQuery query,
-            [FromServices] IQueryHandler<PagedResult<City>, GetCitiesQuery> queryHandler,
-            [FromServices] IMapper mapper )
+        [FromQuery] GetCitiesQuery query,
+        [FromServices] IQueryHandler<PagedResult<City>, GetCitiesQuery> queryHandler,
+        [FromServices] IMapper mapper )
     {
         Result<PagedResult<City>> result = await queryHandler.HandleAsync( query );
 
@@ -41,9 +41,9 @@ public class CitiesController : ControllerBase
 
     [HttpGet( "{id}" )]
     public async Task<ActionResult<CityDetailDto>> GetCityById(
-            [FromRoute] int id,
-            [FromServices] IQueryHandler<City, GetCityByIdQuery> queryHandler,
-            [FromServices] IMapper mapper )
+        [FromRoute] int id,
+        [FromServices] IQueryHandler<City, GetCityByIdQuery> queryHandler,
+        [FromServices] IMapper mapper )
     {
         GetCityByIdQuery query = new GetCityByIdQuery
         {
@@ -63,9 +63,9 @@ public class CitiesController : ControllerBase
 
     [HttpPost]
     public async Task<ActionResult<CityListDto>> CreateCity(
-            [FromBody] CreateCityCommand command,
-            [FromServices] ICommandHandlerWithResult<CreateCityCommand, City> commandHandler,
-            [FromServices] IMapper mapper )
+        [FromBody] CreateCityCommand command,
+        [FromServices] ICommandHandlerWithResult<CreateCityCommand, City> commandHandler,
+        [FromServices] IMapper mapper )
     {
         Result<City> result = await commandHandler.HandleAsync( command );
 
@@ -80,10 +80,10 @@ public class CitiesController : ControllerBase
 
     [HttpPut( "{id}" )]
     public async Task<ActionResult<CityListDto>> UpdateCity(
-            [FromRoute] int id,
-            [FromBody] UpdateCityCommand command,
-            [FromServices] ICommandHandlerWithResult<UpdateCityCommand, City> commandHandler,
-            [FromServices] IMapper mapper )
+        [FromRoute] int id,
+        [FromBody] UpdateCityCommand command,
+        [FromServices] ICommandHandlerWithResult<UpdateCityCommand, City> commandHandler,
+        [FromServices] IMapper mapper )
     {
         command.Id = id;
 
@@ -100,8 +100,8 @@ public class CitiesController : ControllerBase
 
     [HttpDelete( "{id}" )]
     public async Task<ActionResult<string>> DeleteCity(
-            [FromRoute] int id,
-            [FromServices] ICommandHandlerWithResult<DeleteCityCommand, string> commandHandler )
+        [FromRoute] int id,
+        [FromServices] ICommandHandlerWithResult<DeleteCityCommand, string> commandHandler )
     {
         DeleteCityCommand command = new DeleteCityCommand
         {

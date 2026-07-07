@@ -18,15 +18,14 @@ namespace Admin.Api.Controllers;
 [ApiController]
 [Route( "api/departments" )]
 [Authorize]
-
 public class DepartmentsController : ControllerBase
 {
     [HttpGet]
     [Authorize( Policy = nameof( PermissionName.DepartmentView ) )]
     public async Task<ActionResult<PagedResult<DepartmentListDto>>> GetDepartments(
-            [FromQuery] GetDepartmentsQuery query,
-            [FromServices] IQueryHandler<PagedResult<Department>, GetDepartmentsQuery> queryHandler,
-            [FromServices] IMapper mapper )
+        [FromQuery] GetDepartmentsQuery query,
+        [FromServices] IQueryHandler<PagedResult<Department>, GetDepartmentsQuery> queryHandler,
+        [FromServices] IMapper mapper )
     {
         Result<PagedResult<Department>> result = await queryHandler.HandleAsync( query );
 
@@ -45,9 +44,9 @@ public class DepartmentsController : ControllerBase
     [HttpGet( "{id}" )]
     [Authorize( Policy = nameof( PermissionName.DepartmentView ) )]
     public async Task<ActionResult<DepartmentDetailDto>> GetDepartmentById(
-            [FromRoute] int id,
-            [FromServices] IQueryHandler<Department, GetDepartmentByIdQuery> queryHandler,
-            [FromServices] IMapper mapper )
+        [FromRoute] int id,
+        [FromServices] IQueryHandler<Department, GetDepartmentByIdQuery> queryHandler,
+        [FromServices] IMapper mapper )
     {
         GetDepartmentByIdQuery query = new GetDepartmentByIdQuery
         {
@@ -68,9 +67,9 @@ public class DepartmentsController : ControllerBase
     [HttpPost]
     [Authorize( Policy = nameof( PermissionName.DepartmentCreate ) )]
     public async Task<ActionResult<DepartmentDetailDto>> CreateDepartment(
-            [FromBody] CreateDepartmentCommand command,
-            [FromServices] ICommandHandlerWithResult<CreateDepartmentCommand, Department> commandHandler,
-            [FromServices] IMapper mapper )
+        [FromBody] CreateDepartmentCommand command,
+        [FromServices] ICommandHandlerWithResult<CreateDepartmentCommand, Department> commandHandler,
+        [FromServices] IMapper mapper )
     {
         Result<Department> result = await commandHandler.HandleAsync( command );
 
@@ -86,10 +85,10 @@ public class DepartmentsController : ControllerBase
     [HttpPut( "{id}" )]
     [Authorize( Policy = nameof( PermissionName.DepartmentUpdate ) )]
     public async Task<ActionResult<DepartmentListDto>> UpdateDepartment(
-            [FromRoute] int id,
-            [FromBody] UpdateDepartmentCommand command,
-            [FromServices] ICommandHandlerWithResult<UpdateDepartmentCommand, Department> commandHandler,
-            [FromServices] IMapper mapper )
+        [FromRoute] int id,
+        [FromBody] UpdateDepartmentCommand command,
+        [FromServices] ICommandHandlerWithResult<UpdateDepartmentCommand, Department> commandHandler,
+        [FromServices] IMapper mapper )
     {
         command.Id = id;
 
@@ -107,8 +106,8 @@ public class DepartmentsController : ControllerBase
     [HttpDelete( "{id}" )]
     [Authorize( Policy = nameof( PermissionName.DepartmentDelete ) )]
     public async Task<ActionResult<string>> DeleteDepartment(
-            [FromRoute] int id,
-            [FromServices] ICommandHandlerWithResult<DeleteDepartmentCommand, string> commandHandler )
+        [FromRoute] int id,
+        [FromServices] ICommandHandlerWithResult<DeleteDepartmentCommand, string> commandHandler )
     {
         DeleteDepartmentCommand command = new DeleteDepartmentCommand
         {
@@ -128,8 +127,8 @@ public class DepartmentsController : ControllerBase
     [HttpGet( "lookup" )]
     [Authorize( Policy = nameof( PermissionName.DepartmentView ) )]
     public async Task<ActionResult<List<DepartmentLookupDto>>> GetDepartmentsLookup(
-            [FromServices] IQueryHandler<List<Department>, GetDepartmentsLookupQuery> queryHandler,
-            [FromServices] IMapper mapper )
+        [FromServices] IQueryHandler<List<Department>, GetDepartmentsLookupQuery> queryHandler,
+        [FromServices] IMapper mapper )
     {
         GetDepartmentsLookupQuery query = new GetDepartmentsLookupQuery();
         Result<List<Department>> result = await queryHandler.HandleAsync( query );

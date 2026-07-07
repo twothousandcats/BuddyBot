@@ -2,7 +2,8 @@
 using Microsoft.Extensions.Logging;
 
 namespace Application.CQRSInterfaces;
-public abstract class CommandBaseHandler<TCommand> ( ILogger<TCommand> logger )
+
+public abstract class CommandBaseHandler<TCommand>( ILogger<TCommand> logger )
     : ICommandHandler<TCommand> where TCommand : class
 {
     public async Task<Result> HandleAsync( TCommand command )
@@ -21,6 +22,7 @@ public abstract class CommandBaseHandler<TCommand> ( ILogger<TCommand> logger )
     }
 
     protected abstract Task<Result> HandleImplAsync( TCommand command );
+
     protected virtual Task CleanupOnFailureAsync( TCommand command )
     {
         return Task.CompletedTask;

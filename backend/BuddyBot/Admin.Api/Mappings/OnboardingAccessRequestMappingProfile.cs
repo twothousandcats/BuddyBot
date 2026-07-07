@@ -43,8 +43,7 @@ public class OnboardingAccessRequestMappingProfile : Profile
                     ? src.Candidate.OnboardingAccessTimeUtc
                     : null ) )
             .ForMember( dest => dest.CreatedAt,
-                opt => opt.MapFrom( 
-                    src => src.CreatedAtUtc ) );
+                opt => opt.MapFrom( src => src.CreatedAtUtc ) );
 
 
         CreateMap<OnboardingAccessRequest, OnboardingAccessRequestDetailDto>()
@@ -81,7 +80,6 @@ public class OnboardingAccessRequestMappingProfile : Profile
                     ? src.Candidate.OnboardingAccessTimeUtc
                     : null ) )
             .ForMember( dest => dest.CreatedAt,
-                opt => opt.MapFrom(
-                    src => src.CreatedAtUtc ) );
+                opt => opt.MapFrom( src => src.CreatedAtUtc ) );
     }
 }

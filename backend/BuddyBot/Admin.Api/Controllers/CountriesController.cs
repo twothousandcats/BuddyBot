@@ -17,14 +17,13 @@ namespace Admin.Api.Controllers;
 [ApiController]
 [Route( "api/countries" )]
 [Authorize]
-
 public class CountriesController : ControllerBase
 {
     [HttpGet]
     public async Task<ActionResult<PagedResult<CountryListDto>>> GetCountries(
-            [FromQuery] GetCountriesQuery query,
-            [FromServices] IQueryHandler<PagedResult<Country>, GetCountriesQuery> queryHandler,
-            [FromServices] IMapper mapper )
+        [FromQuery] GetCountriesQuery query,
+        [FromServices] IQueryHandler<PagedResult<Country>, GetCountriesQuery> queryHandler,
+        [FromServices] IMapper mapper )
     {
         Result<PagedResult<Country>> result = await queryHandler.HandleAsync( query );
 
@@ -42,9 +41,9 @@ public class CountriesController : ControllerBase
 
     [HttpGet( "{id}" )]
     public async Task<ActionResult<CountryDetailDto>> GetCountryById(
-            [FromRoute] int id,
-            [FromServices] IQueryHandler<Country, GetCountryByIdQuery> queryHandler,
-            [FromServices] IMapper mapper )
+        [FromRoute] int id,
+        [FromServices] IQueryHandler<Country, GetCountryByIdQuery> queryHandler,
+        [FromServices] IMapper mapper )
     {
         GetCountryByIdQuery query = new GetCountryByIdQuery
         {
@@ -64,9 +63,9 @@ public class CountriesController : ControllerBase
 
     [HttpPost]
     public async Task<ActionResult<CountryListDto>> CreateCountry(
-            [FromBody] CreateCountryCommand command,
-            [FromServices] ICommandHandlerWithResult<CreateCountryCommand, Country> commandHandler,
-            [FromServices] IMapper mapper )
+        [FromBody] CreateCountryCommand command,
+        [FromServices] ICommandHandlerWithResult<CreateCountryCommand, Country> commandHandler,
+        [FromServices] IMapper mapper )
     {
         Result<Country> result = await commandHandler.HandleAsync( command );
 
@@ -81,10 +80,10 @@ public class CountriesController : ControllerBase
 
     [HttpPut( "{id}" )]
     public async Task<ActionResult<CountryListDto>> UpdateCountry(
-            [FromRoute] int id,
-            [FromBody] UpdateCountryCommand command,
-            [FromServices] ICommandHandlerWithResult<UpdateCountryCommand, Country> commandHandler,
-            [FromServices] IMapper mapper )
+        [FromRoute] int id,
+        [FromBody] UpdateCountryCommand command,
+        [FromServices] ICommandHandlerWithResult<UpdateCountryCommand, Country> commandHandler,
+        [FromServices] IMapper mapper )
     {
         command.Id = id;
 
@@ -101,8 +100,8 @@ public class CountriesController : ControllerBase
 
     [HttpDelete( "{id}" )]
     public async Task<ActionResult<string>> DeleteCountry(
-            [FromRoute] int id,
-            [FromServices] ICommandHandlerWithResult<DeleteCountryCommand, string> commandHandler )
+        [FromRoute] int id,
+        [FromServices] ICommandHandlerWithResult<DeleteCountryCommand, string> commandHandler )
     {
         DeleteCountryCommand command = new DeleteCountryCommand
         {
@@ -121,8 +120,8 @@ public class CountriesController : ControllerBase
 
     [HttpGet( "lookup" )]
     public async Task<ActionResult<List<CountryLookupDto>>> GetCountriesLookup(
-    [FromServices] IQueryHandler<List<Country>, GetCountriesLookupQuery> queryHandler,
-    [FromServices] IMapper mapper )
+        [FromServices] IQueryHandler<List<Country>, GetCountriesLookupQuery> queryHandler,
+        [FromServices] IMapper mapper )
     {
         GetCountriesLookupQuery query = new GetCountriesLookupQuery();
         Result<List<Country>> result = await queryHandler.HandleAsync( query );

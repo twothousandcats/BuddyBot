@@ -20,7 +20,6 @@ namespace Admin.Api.Controllers;
 
 [ApiController]
 [Route( "/api/users" )]
-
 public class UsersController : ControllerBase
 {
     [HttpPost( "refresh-token" )]
@@ -37,12 +36,13 @@ public class UsersController : ControllerBase
 
         return Ok( commandResult.Value );
     }
+
     public record RefreshTokenRequestDto( string RefreshToken );
 
     [HttpPost( "login" )]
     public async Task<ActionResult<TokenDto>> LoginUser(
         [FromBody] LoginDto loginDto,
-        [FromServices] ILoginService service)
+        [FromServices] ILoginService service )
     {
         if ( string.IsNullOrWhiteSpace( loginDto.Login ) || string.IsNullOrWhiteSpace( loginDto.Password ) )
         {
@@ -62,8 +62,8 @@ public class UsersController : ControllerBase
     [HttpPost( "logout" )]
     [Authorize( Policy = nameof( PermissionName.UserLogout ) )]
     public async Task<IActionResult> Logout(
-    [FromServices] IUserAuthTokenRepository userAuthTokenRepository,
-    [FromServices] IUnitOfWork unitOfWork )
+        [FromServices] IUserAuthTokenRepository userAuthTokenRepository,
+        [FromServices] IUnitOfWork unitOfWork )
     {
         var userIdClaim = User.FindFirst( "userId" );
         if ( userIdClaim == null || !int.TryParse( userIdClaim.Value, out int userId ) )
@@ -76,7 +76,10 @@ public class UsersController : ControllerBase
             await unitOfWork.CommitAsync();
         }
 
-        return Ok( new { message = "Вы успешно вышли из аккаунта" } );
+        return Ok( new
+        {
+            message = "Вы успешно вышли из аккаунта"
+        } );
     }
 
 
@@ -117,8 +120,8 @@ public class UsersController : ControllerBase
         }
 
         GetUserByIdQuery query = new GetUserByIdQuery
-        { 
-            Id = userId 
+        {
+            Id = userId
         };
 
         Result<User> result = await queryHandler.HandleAsync( query );
@@ -135,9 +138,9 @@ public class UsersController : ControllerBase
     [HttpGet]
     [Authorize( Policy = nameof( PermissionName.UserView ) )]
     public async Task<ActionResult<PagedResult<UserDetailDto>>> GetUsers(
-            [FromQuery] GetUsersQuery query,
-            [FromServices] IQueryHandler<PagedResult<User>, GetUsersQuery> queryHandler,
-            [FromServices] IMapper mapper )
+        [FromQuery] GetUsersQuery query,
+        [FromServices] IQueryHandler<PagedResult<User>, GetUsersQuery> queryHandler,
+        [FromServices] IMapper mapper )
     {
         Result<PagedResult<User>> result = await queryHandler.HandleAsync( query );
 
@@ -195,9 +198,9 @@ public class UsersController : ControllerBase
     [HttpGet( "{id}" )]
     [Authorize( Policy = nameof( PermissionName.UserView ) )]
     public async Task<ActionResult<UserDetailDto>> GetUserById(
-            [FromRoute] int id,
-            [FromServices] IQueryHandler<User, GetUserByIdQuery> queryHandler,
-            [FromServices] IMapper mapper )
+        [FromRoute] int id,
+        [FromServices] IQueryHandler<User, GetUserByIdQuery> queryHandler,
+        [FromServices] IMapper mapper )
     {
         GetUserByIdQuery query = new GetUserByIdQuery
         {
@@ -218,8 +221,8 @@ public class UsersController : ControllerBase
     [HttpDelete( "{id}" )]
     [Authorize( Policy = nameof( PermissionName.UserDelete ) )]
     public async Task<ActionResult<string>> DeleteUser(
-    [FromRoute] int id,
-    [FromServices] ICommandHandlerWithResult<DeleteUserCommand, string> commandHandler )
+        [FromRoute] int id,
+        [FromServices] ICommandHandlerWithResult<DeleteUserCommand, string> commandHandler )
     {
         DeleteUserCommand command = new DeleteUserCommand
         {

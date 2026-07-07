@@ -40,6 +40,5 @@ public class CityMappingProfile : Profile
                 dest => dest.CountryName,
                 opt => opt.MapFrom( src => src.Country != null ? src.Country.Name : null )
             );
-
     }
 }

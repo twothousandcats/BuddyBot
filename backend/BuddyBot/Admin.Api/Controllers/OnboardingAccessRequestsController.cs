@@ -20,15 +20,15 @@ namespace Admin.Api.Controllers;
 [ApiController]
 [Route( "api/onboarding-access-requests" )]
 [Authorize]
-
 public class OnboardingAccessRequestsController : ControllerBase
 {
     [HttpPost]
     [Authorize( Policy = nameof( PermissionName.OnboardingAccessRequestCreate ) )]
     public async Task<ActionResult<OnboardingAccessRequestDetailDto>> CreateOnboardingAccessRequest(
-    [FromBody] CreateOnboardingAccessRequestCommand command,
-    [FromServices] ICommandHandlerWithResult<CreateOnboardingAccessRequestCommand, OnboardingAccessRequest> commandHandler,
-    [FromServices] IMapper mapper )
+        [FromBody] CreateOnboardingAccessRequestCommand command,
+        [FromServices]
+        ICommandHandlerWithResult<CreateOnboardingAccessRequestCommand, OnboardingAccessRequest> commandHandler,
+        [FromServices] IMapper mapper )
     {
         Result<OnboardingAccessRequest> result = await commandHandler.HandleAsync( command );
 
@@ -44,9 +44,10 @@ public class OnboardingAccessRequestsController : ControllerBase
     [HttpGet]
     [Authorize( Policy = nameof( PermissionName.OnboardingAccessRequestView ) )]
     public async Task<ActionResult<PagedResult<OnboardingAccessRequestListDto>>> GetOnboardingAccessRequests(
-    [FromQuery] GetOnboardingAccessRequestsQuery query,
-    [FromServices] IQueryHandler<PagedResult<OnboardingAccessRequest>, GetOnboardingAccessRequestsQuery> queryHandler,
-    [FromServices] IMapper mapper )
+        [FromQuery] GetOnboardingAccessRequestsQuery query,
+        [FromServices]
+        IQueryHandler<PagedResult<OnboardingAccessRequest>, GetOnboardingAccessRequestsQuery> queryHandler,
+        [FromServices] IMapper mapper )
     {
         Result<PagedResult<OnboardingAccessRequest>> result = await queryHandler.HandleAsync( query );
 
@@ -66,7 +67,8 @@ public class OnboardingAccessRequestsController : ControllerBase
     [Authorize( Policy = nameof( PermissionName.OnboardingAccessRequestView ) )]
     public async Task<ActionResult<OnboardingAccessRequestDetailDto>> GetOnboardingAccessRequestByCandidateId(
         [FromRoute] int candidateId,
-        [FromServices] IQueryHandler<OnboardingAccessRequest, GetOnboardingAccessRequestByCandidateIdQuery> queryHandler,
+        [FromServices]
+        IQueryHandler<OnboardingAccessRequest, GetOnboardingAccessRequestByCandidateIdQuery> queryHandler,
         [FromServices] IMapper mapper )
     {
         GetOnboardingAccessRequestByCandidateIdQuery query = new GetOnboardingAccessRequestByCandidateIdQuery
@@ -88,10 +90,11 @@ public class OnboardingAccessRequestsController : ControllerBase
     [HttpPut( "{candidateId}/confirm" )]
     [Authorize( Policy = nameof( PermissionName.OnboardingAccessRequestConfirm ) )]
     public async Task<ActionResult<OnboardingAccessRequestDetailDto>> ConfirmOnboardingAccessRequest(
-            [FromRoute] int candidateId,
-            [FromBody] ConfirmOnboardingAccessRequestCommand command,
-            [FromServices] ICommandHandlerWithResult<ConfirmOnboardingAccessRequestCommand, OnboardingAccessRequest> commandHandler,
-            [FromServices] IMapper mapper )
+        [FromRoute] int candidateId,
+        [FromBody] ConfirmOnboardingAccessRequestCommand command,
+        [FromServices]
+        ICommandHandlerWithResult<ConfirmOnboardingAccessRequestCommand, OnboardingAccessRequest> commandHandler,
+        [FromServices] IMapper mapper )
     {
         command.CandidateId = candidateId;
 
@@ -109,9 +112,10 @@ public class OnboardingAccessRequestsController : ControllerBase
     [HttpPut( "{candidateId}/reject" )]
     [Authorize( Policy = nameof( PermissionName.OnboardingAccessRequestReject ) )]
     public async Task<ActionResult<OnboardingAccessRequestDetailDto>> RejectOnboardingAccessRequest(
-            [FromRoute] int candidateId,
-            [FromServices] ICommandHandlerWithResult<RejectOnboardingAccessRequestCommand, OnboardingAccessRequest> commandHandler,
-            [FromServices] IMapper mapper )
+        [FromRoute] int candidateId,
+        [FromServices]
+        ICommandHandlerWithResult<RejectOnboardingAccessRequestCommand, OnboardingAccessRequest> commandHandler,
+        [FromServices] IMapper mapper )
     {
         RejectOnboardingAccessRequestCommand command = new RejectOnboardingAccessRequestCommand
         {
@@ -134,7 +138,8 @@ public class OnboardingAccessRequestsController : ControllerBase
     public async Task<ActionResult<OnboardingAccessRequestDetailDto>> UpdateOnboardingAccessRequest(
         [FromRoute] int candidateId,
         [FromBody] UpdateOnboardingAccessRequestCommand command,
-        [FromServices] ICommandHandlerWithResult<UpdateOnboardingAccessRequestCommand, OnboardingAccessRequest> commandHandler,
+        [FromServices]
+        ICommandHandlerWithResult<UpdateOnboardingAccessRequestCommand, OnboardingAccessRequest> commandHandler,
         [FromServices] IMapper mapper )
     {
         command.CandidateId = candidateId;
@@ -174,9 +179,10 @@ public class OnboardingAccessRequestsController : ControllerBase
     [HttpPut( "{candidateId}/restore" )]
     [Authorize( Policy = nameof( PermissionName.OnboardingAccessRequestRestore ) )]
     public async Task<ActionResult<OnboardingAccessRequestDetailDto>> RestoreOnboardingAccessRequest(
-    [FromRoute] int candidateId,
-    [FromServices] ICommandHandlerWithResult<RestoreOnboardingAccessRequestCommand, OnboardingAccessRequest> commandHandler,
-    [FromServices] IMapper mapper )
+        [FromRoute] int candidateId,
+        [FromServices]
+        ICommandHandlerWithResult<RestoreOnboardingAccessRequestCommand, OnboardingAccessRequest> commandHandler,
+        [FromServices] IMapper mapper )
     {
         RestoreOnboardingAccessRequestCommand command = new RestoreOnboardingAccessRequestCommand
         {

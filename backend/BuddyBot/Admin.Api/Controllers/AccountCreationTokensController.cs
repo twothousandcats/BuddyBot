@@ -19,7 +19,6 @@ namespace Admin.Api.Controllers;
 [ApiController]
 [Route( "api/account-creation-tokens" )]
 [Authorize]
-
 public class AccountCreationTokensController : ControllerBase
 {
     [HttpGet]
@@ -69,9 +68,9 @@ public class AccountCreationTokensController : ControllerBase
     [HttpPost( "candidate" )]
     [Authorize( Policy = nameof( PermissionName.AccountCreationTokenCreateCandidate ) )]
     public async Task<ActionResult<AccountCreationTokenDetailDto>> CreateCandidateInvite(
-            [FromBody] CreateCandidateInviteCommand command,
-            [FromServices] ICommandHandlerWithResult<CreateCandidateInviteCommand, AccountCreationToken> commandHandler,
-            [FromServices] IMapper mapper )
+        [FromBody] CreateCandidateInviteCommand command,
+        [FromServices] ICommandHandlerWithResult<CreateCandidateInviteCommand, AccountCreationToken> commandHandler,
+        [FromServices] IMapper mapper )
     {
         Result<AccountCreationToken> result = await commandHandler.HandleAsync( command );
         if ( !result.IsSuccess )
@@ -86,9 +85,9 @@ public class AccountCreationTokensController : ControllerBase
     [HttpPost( "hr" )]
     [Authorize( Policy = nameof( PermissionName.AccountCreationTokenCreateHr ) )]
     public async Task<ActionResult<AccountCreationTokenDetailDto>> CreateHRInvite(
-            [FromBody] CreateHRInviteCommand command,
-            [FromServices] ICommandHandlerWithResult<CreateHRInviteCommand, AccountCreationToken> commandHandler,
-            [FromServices] IMapper mapper )
+        [FromBody] CreateHRInviteCommand command,
+        [FromServices] ICommandHandlerWithResult<CreateHRInviteCommand, AccountCreationToken> commandHandler,
+        [FromServices] IMapper mapper )
     {
         Result<AccountCreationToken> result = await commandHandler.HandleAsync( command );
         if ( !result.IsSuccess )
@@ -126,10 +125,10 @@ public class AccountCreationTokensController : ControllerBase
     [HttpPut( "{tokenValue}" )]
     [Authorize( Policy = nameof( PermissionName.AccountCreationTokenUpdate ) )]
     public async Task<ActionResult<AccountCreationTokenDetailDto>> UpdateToken(
-    [FromRoute] Guid tokenValue,
-    [FromBody] UpdateTokenCommand command,
-    [FromServices] ICommandHandlerWithResult<UpdateTokenCommand, AccountCreationToken> commandHandler,
-    [FromServices] IMapper mapper )
+        [FromRoute] Guid tokenValue,
+        [FromBody] UpdateTokenCommand command,
+        [FromServices] ICommandHandlerWithResult<UpdateTokenCommand, AccountCreationToken> commandHandler,
+        [FromServices] IMapper mapper )
     {
         command.TokenValue = tokenValue;
 

@@ -11,12 +11,12 @@ using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using Infrastructure.Foundation.Database.Seeding;
 
-var builder = WebApplication.CreateBuilder( args );
+WebApplicationBuilder builder = WebApplication.CreateBuilder( args );
 
 Log.Logger = new LoggerConfiguration()
-   .ReadFrom.Configuration( builder.Configuration )
-   .Enrich.FromLogContext()
-   .CreateLogger();
+    .ReadFrom.Configuration( builder.Configuration )
+    .Enrich.FromLogContext()
+    .CreateLogger();
 
 builder.Host.UseSerilog();
 
@@ -26,18 +26,18 @@ builder.Services.AddAutoMapper( AppDomain.CurrentDomain.GetAssemblies() );
 
 builder.Services.AddControllers()
     .AddJsonOptions( options =>
-     {
-         options.JsonSerializerOptions.Converters.Add( new JsonStringEnumConverter() );
-     } );
+    {
+        options.JsonSerializerOptions.Converters.Add( new JsonStringEnumConverter() );
+    } );
 
 builder.Services.AddCors( options =>
 {
     options.AddPolicy( "AllowLocalhost", policy =>
     {
         policy.WithOrigins( "http://localhost:5173" )
-              .AllowAnyHeader()
-              .AllowAnyMethod()
-              .AllowCredentials();
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
     } );
 } );
 
@@ -51,7 +51,8 @@ builder.Services.Configure<FileStorageOptions>( builder.Configuration.GetSection
 var jwtOptions = builder.Configuration.GetSection( "JwtOptions" ).Get<JwtOptions>();
 if ( string.IsNullOrWhiteSpace( jwtOptions?.Secret ) )
 {
-    throw new InvalidOperationException( "JWT Secret is not configured! Проверьте секцию JwtOptions:Secret в appsettings." );
+    throw new InvalidOperationException(
+        "JWT Secret is not configured! Проверьте секцию JwtOptions:Secret в appsettings." );
 }
 
 builder.Services.AddAuthentication( JwtBearerDefaults.AuthenticationScheme )

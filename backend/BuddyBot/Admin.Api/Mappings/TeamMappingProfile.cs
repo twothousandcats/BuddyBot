@@ -37,15 +37,15 @@ public class TeamMappingProfile : Profile
             )
             .ForMember(
                 dest => dest.LeaderFirstName,
-                opt => opt.MapFrom( src => src.Leader != null && src.Leader.ContactInfo != null 
-                    ? src.Leader.ContactInfo.FirstName 
+                opt => opt.MapFrom( src => src.Leader != null && src.Leader.ContactInfo != null
+                    ? src.Leader.ContactInfo.FirstName
                     : null )
             )
             .ForMember(
                 dest => dest.LeaderLastName,
                 opt => opt.MapFrom( src => src.Leader != null && src.Leader.ContactInfo != null
-                ? src.Leader.ContactInfo.LastName 
-                : null )
+                    ? src.Leader.ContactInfo.LastName
+                    : null )
             );
 
         CreateMap<Team, TeamDetailDto>()

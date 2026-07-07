@@ -8,7 +8,7 @@ namespace Admin.Api.Mappings;
 
 public class UserMappingProfile : Profile
 {
-    public UserMappingProfile() 
+    public UserMappingProfile()
     {
         CreateMap<User, UserLookupDto>()
             .ForMember( d => d.Id,
@@ -61,9 +61,10 @@ public class UserMappingProfile : Profile
             .ForMember( d => d.CityId, opt => opt.MapFrom( src => src.ContactInfo != null
                 ? src.ContactInfo.CityId
                 : null ) )
-            .ForMember( d => d.CityName, opt => opt.MapFrom( src => src.ContactInfo != null && src.ContactInfo.City != null
-                ? src.ContactInfo.City.Name
-                : null ) )
+            .ForMember( d => d.CityName, opt => opt.MapFrom( src =>
+                src.ContactInfo != null && src.ContactInfo.City != null
+                    ? src.ContactInfo.City.Name
+                    : null ) )
             .ForMember( d => d.HRs,
                 opt => opt.MapFrom( src => src.HRs != null
                     ? src.HRs.Select( hr => hr ).ToList()
