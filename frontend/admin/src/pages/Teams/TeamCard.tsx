@@ -12,39 +12,41 @@ export default function TeamCard({ team, onDelete }: { team: TeamList; onDelete:
             ? `${team.leaderFirstName ?? ""} ${team.leaderLastName ?? ""}`.trim()
             : null;
     return (
-        <div className="card border-0 shadow-sm rounded-4 px-3 py-3 position-relative">
-            <div className="position-absolute top-0 end-0 m-2">
-                {hasPermission(permissions, PermissionName.TeamUpdate) && (
-                    <Link
-                        to={ROUTES.TEAMS.EDIT(team.id)}
-                        className="btn btn-link text-primary p-0"
-                        title="Редактировать"
-                    >
-                        <i className="bi bi-pencil-square fs-5"></i>
-                    </Link>
-                )}
-                {hasPermission(permissions, PermissionName.TeamDelete) && (
-                    <button
-                        className="btn btn-link text-danger p-0 ms-4"
-                        title="Удалить"
-                        onClick={() => onDelete(team)}
-                    >
-                        <i className="bi bi-trash fs-5"></i>
-                    </button>
-                )}
-            </div>
-            <div>
-                <div className="fw-semibold mb-1">{team.name}</div>
-                <div className="small text-secondary mb-1">
-                    <i className="bi bi-person-badge me-1"></i>
-                    Руководитель:{" "}
-                    {leader ? (
-                        <span className="fw-semibold">{leader}</span>
-                    ) : (
-                        <span className="text-danger">Отсутствует</span>
+        <div className="card gap-2 border-0 shadow-sm rounded-4 px-3 py-3 position-relative">
+            <div className="d-flex justify-content-between align-items-center">
+                <div className="fw-semibold">{team.name}</div>
+                <div className="d-flex">
+                    {hasPermission(permissions, PermissionName.TeamUpdate) && (
+                        <Link
+                            to={ROUTES.TEAMS.EDIT(team.id)}
+                            className="btn btn-link text-primary p-0"
+                            title="Редактировать"
+                        >
+                            <i className="bi bi-pencil-square fs-5"></i>
+                        </Link>
+                    )}
+                    {hasPermission(permissions, PermissionName.TeamDelete) && (
+                        <button
+                            className="btn btn-link text-danger p-0 ms-4"
+                            title="Удалить"
+                            onClick={() => onDelete(team)}
+                        >
+                            <i className="bi bi-trash fs-5"></i>
+                        </button>
                     )}
                 </div>
-                <div className="d-flex gap-2 mt-1">
+            </div>
+            <div className="small text-secondary">
+                <i className="bi bi-person-badge me-1"></i>
+                Руководитель:{" "}
+                {leader ? (
+                    <span className="fw-semibold">{leader}</span>
+                ) : (
+                    <span className="text-danger">Отсутствует</span>
+                )}
+            </div>
+            <div className="d-flex justify-content-between align-items-center gap-2">
+                <div className="d-flex gap-2">
                     <span className="badge bg-primary bg-opacity-10 text-primary fw-normal">
                         {team.memberCount} участник{team.memberCount !== 1 ? "а" : ""}
                     </span>
@@ -52,7 +54,7 @@ export default function TeamCard({ team, onDelete }: { team: TeamList; onDelete:
                         {team.departmentName}
                     </span>
                 </div>
-                <div className="mt-2 text-end">
+                <div className="">
                     <Link
                         to={`${ROUTES.MEMBERS.ROOT}?teamId=${team.id}&departmentId=${team.departmentId}`}
                         className="small text-primary fw-semibold text-decoration-none"
