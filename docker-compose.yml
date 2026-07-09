@@ -1,39 +1,99 @@
+name: buddybot
+
+x-backend-env: &backend-env
+  ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}"
+  ConnectionStrings__HangfireConnection: "Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}"
+
 services:
-    postgres:
-        container_name: Database
-        image: postgres:16
-        environment:
-            - POSTGRES_USER=postgres
-            - POSTGRES_PASSWORD=123123
-            - POSTGRES_DB=BuddyBot
-        ports:
-            - "5436:5432"
-        volumes:
-            - postgres-data:/var/lib/postgresql/data
-
-    adminapi:
-        container_name: Backend-AdminApi
-        build:
-            context: .
-            dockerfile: /backend/BuddyBot/Admin.Api/Dockerfile
-        environment:
-            - ASPNETCORE_ENVIRONMENT=Development
-            - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=BuddyBot;Username=postgres;Password=123123
-        depends_on:
-            - postgres
-        ports:
-            - "8080:8080"
-        command: ["dotnet", "Admin.Api.dll"]
-
-    frontend:
-        container_name: Frontend
-        build:
-            context: .
-            dockerfile: /frontend/admin/Dockerfile
-        ports:
-            - "3000:80"
-        depends_on:
-            - adminapi
+  postgres:
+    image: postgres:16
+    container_name: buddybot-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks: [ buddybot-net ]
+  
+  adminapi:
+    build:
+      context: ./backend/BuddyBot
+      dockerfile: Admin.Api/Dockerfile
+    image: buddybot-adminapi
+    container_name: buddybot-adminapi
+    environment:
+      <<: *backend-env
+      JwtOptions__Secret: ${JWT_SECRET}
+      TelegramBot__BaseUrl: ${TELEGRAM_BASE_URL}
+      FileStorageOptions__RootPath: wwwroot/Uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - uploads-data:/app/wwwroot/Uploads
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -fsS http://localhost:8080/health || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+    networks: [ buddybot-net ]
+  
+  scheduler:
+    build:
+      context: ./backend/BuddyBot
+      dockerfile: Scheduler/Dockerfile
+    image: buddybot-scheduler
+    container_name: buddybot-scheduler
+    environment:
+      <<: *backend-env
+      TelegramBot__Token: ${TELEGRAM_BOT_TOKEN}
+      ApiUrl: "http://adminapi:8080/api"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      adminapi:
+        condition: service_healthy
+    networks: [ buddybot-net ]
+  
+  telegrambot:
+    build:
+      context: ./backend/BuddyBot
+      dockerfile: TelegramBot/Dockerfile
+    image: buddybot-telegrambot
+    container_name: buddybot-telegrambot
+    environment:
+      <<: *backend-env
+      TelegramBot__Token: ${TELEGRAM_BOT_TOKEN}
+      ApiUrl: "http://adminapi:8080/api"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      adminapi:
+        condition: service_healthy
+    networks: [ buddybot-net ]
+  
+  frontend:
+    build:
+      context: ./frontend/admin
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: "${VITE_API_URL:-}"
+    image: buddybot-frontend
+    container_name: buddybot-frontend
+    depends_on:
+      - adminapi
+    networks: [ buddybot-net ]
 
 volumes:
-    postgres-data:
+  postgres-data:
+  uploads-data:
+
+networks:
+  buddybot-net:

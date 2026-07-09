@@ -8,14 +8,13 @@ COPY Infrastructure/Infrastructure.csproj Infrastructure/
 COPY Admin.Api/Admin.Api.csproj           Admin.Api/
 COPY TelegramBot/TelegramBot.csproj       TelegramBot/
 COPY Scheduler/Scheduler.csproj           Scheduler/
-RUN dotnet restore Admin.Api/Admin.Api.csproj
+RUN dotnet restore Scheduler/Scheduler.csproj
 COPY . .
-RUN dotnet publish Admin.Api/Admin.Api.csproj -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish Scheduler/Scheduler.csproj -c Release -o /app/publish /p:UseAppHost=false /p:ErrorOnDuplicatePublishOutputFiles=false
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
-RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
 COPY --from=build /app/publish .
 ENV ASPNETCORE_HTTP_PORTS=8080
 EXPOSE 8080
-ENTRYPOINT ["dotnet", "Admin.Api.dll"]
+ENTRYPOINT ["dotnet", "Scheduler.dll"]

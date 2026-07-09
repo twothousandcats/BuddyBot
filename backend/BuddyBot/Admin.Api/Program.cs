@@ -26,23 +26,29 @@ builder.Services.AddAutoMapper( AppDomain.CurrentDomain.GetAssemblies() );
 
 builder.Services.AddControllers()
     .AddJsonOptions( options =>
-    {
-        options.JsonSerializerOptions.Converters.Add( new JsonStringEnumConverter() );
-    } );
+        {
+            options.JsonSerializerOptions.Converters.Add( new JsonStringEnumConverter() );
+        }
+    );
 
 builder.Services.AddCors( options =>
-{
-    options.AddPolicy( "AllowLocalhost", policy =>
     {
-        policy.WithOrigins( "http://localhost:5173" )
-            .AllowAnyHeader()
-            .AllowAnyMethod()
-            .AllowCredentials();
-    } );
-} );
+        options.AddPolicy(
+            "AllowLocalhost", policy =>
+            {
+                policy.WithOrigins( "http://localhost:5173" )
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowCredentials();
+            }
+        );
+    }
+);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddHealthChecks();
 
 builder.Services.Configure<TelegramBotOptions>( builder.Configuration.GetSection( "TelegramBot" ) );
 builder.Services.Configure<JwtOptions>( builder.Configuration.GetSection( "JwtOptions" ) );
@@ -52,31 +58,36 @@ var jwtOptions = builder.Configuration.GetSection( "JwtOptions" ).Get<JwtOptions
 if ( string.IsNullOrWhiteSpace( jwtOptions?.Secret ) )
 {
     throw new InvalidOperationException(
-        "JWT Secret is not configured! Проверьте секцию JwtOptions:Secret в appsettings." );
+        "JWT Secret is not configured! Проверьте секцию JwtOptions:Secret в appsettings."
+    );
 }
 
 builder.Services.AddAuthentication( JwtBearerDefaults.AuthenticationScheme )
     .AddJwtBearer( options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
         {
-            ValidateIssuer = false,
-            ValidateAudience = false,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            NameClaimType = "userId",
-            IssuerSigningKey = new SymmetricSecurityKey( Encoding.UTF8.GetBytes( jwtOptions.Secret! ) )
-        };
-    } );
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                NameClaimType = "userId",
+                IssuerSigningKey = new SymmetricSecurityKey( Encoding.UTF8.GetBytes( jwtOptions.Secret! ) )
+            };
+        }
+    );
+
 builder.Services.AddAuthorization( options =>
-{
-    foreach ( PermissionName permission in Enum.GetValues<PermissionName>() )
     {
-        options.AddPolicy(
-            permission.ToString(),
-            policy => policy.RequireClaim( "Permission", permission.ToString() ) );
+        foreach ( PermissionName permission in Enum.GetValues<PermissionName>() )
+        {
+            options.AddPolicy(
+                permission.ToString(),
+                policy => policy.RequireClaim( "Permission", permission.ToString() )
+            );
+        }
     }
-} );
+);
 
 var app = builder.Build();
 
@@ -96,6 +107,8 @@ if ( app.Environment.IsDevelopment() )
 app.UseCors( "AllowLocalhost" );
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapHealthChecks( "/health" );
 
 app.MapControllers();
 app.Run();

@@ -1,0 +1,25 @@
+services:
+  postgres:
+    ports:
+      - "${POSTGRES_HOST_PORT:-5436}:5432"
+
+  adminapi:
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+    ports:
+      - "8080:8080"
+      - "5266:8080"
+
+  scheduler:
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+    ports:
+      - "5000:8080"
+
+  telegrambot:
+    environment:
+      DOTNET_ENVIRONMENT: Development
+
+  frontend:
+    ports:
+      - "3000:80"
