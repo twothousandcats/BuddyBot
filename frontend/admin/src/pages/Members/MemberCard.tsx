@@ -2,8 +2,13 @@ import { Link } from "react-router-dom";
 import { ROUTES } from "../../constants/routes";
 import type { UserDetail } from "../../models/User";
 import { HelpTooltip } from "../../components/HelpTooltip/HelpTooltip";
+import useAuth from "../../hooks/useAuth.tsx";
+import { hasPermission } from "../../utils/hasPermission.ts";
+import { PermissionName } from "../../constants/permissions.ts";
 
 export default function MemberCard({ member, onDelete }: { member: UserDetail; onDelete: (dep: UserDetail) => void }) {
+    const { permissions } = useAuth();
+    const canDelete = hasPermission(permissions, PermissionName.UserDelete);
     const departmentName = member.team?.departmentName;
     const teamName = member.team?.name;
     const isInactiveHR = member.roles.includes("HR") && !member.isActivated;
@@ -14,16 +19,14 @@ export default function MemberCard({ member, onDelete }: { member: UserDetail; o
                 <Link
                     to={ROUTES.MEMBERS.EDIT(member.id)}
                     className="btn btn-link text-primary p-0"
-                    title="Редактировать"
-                >
+                    title="Редактировать">
                     <i className="bi bi-pencil-square fs-5"></i>
                 </Link>
-                {isInactiveHR && onDelete && (
+                {canDelete && onDelete && (
                     <button
                         className="btn btn-link text-danger p-0 ms-4"
                         title="Удалить участника"
-                        onClick={() => onDelete(member)}
-                    >
+                        onClick={() => onDelete(member)}>
                         <i className="bi bi-trash fs-5"></i>
                     </button>
                 )}
