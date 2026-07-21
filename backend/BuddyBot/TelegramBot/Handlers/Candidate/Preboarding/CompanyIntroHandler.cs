@@ -1,5 +1,4 @@
 ﻿using AppUser = Domain.Entities.User;
-
 using Domain.Enums;
 using Telegram.Bot.Types;
 using Telegram.Bot;
@@ -12,11 +11,13 @@ using TelegramBot.Keyboards.Candidate.Preboarding;
 using TelegramBot.Helpers;
 
 namespace TelegramBot.Handlers.Candidate.Preboarding;
+
 public class CompanyIntroHandler( UserService userService, CandidateService candidateService ) : IStepHandler
 {
     public StepKind Step => StepKind.CompanyIntro;
 
-    public async Task HandleAsync( CallbackQuery callbackQuery, ITelegramBotClient botClient, CancellationToken cancellationToken )
+    public async Task HandleAsync( CallbackQuery callbackQuery, ITelegramBotClient botClient,
+        CancellationToken cancellationToken )
     {
         await botClient.RemoveInlineKeyboard( callbackQuery.Message, cancellationToken );
 
@@ -24,12 +25,16 @@ public class CompanyIntroHandler( UserService userService, CandidateService cand
         {
             return;
         }
+
         long telegramId = callbackQuery.From.Id;
 
         AppUser? candidate = await userService.GetUserByTelegramId( telegramId );
         if ( candidate is null )
         {
-            await BotMessageHelper.SendErrorMessage( botClient, callbackQuery.Message.Chat.Id, ErrorMessages.CandidateNotFound, cancellationToken );
+            await BotMessageHelper.SendErrorMessage(
+                botClient, callbackQuery.Message.Chat.Id, ErrorMessages.CandidateNotFound, cancellationToken
+            );
+
             return;
         }
 
@@ -37,18 +42,25 @@ public class CompanyIntroHandler( UserService userService, CandidateService cand
 
         string[] introMessages = PreboardingMessages.CompanyIntro;
 
-        await botClient.SendVideoNote(
-            chatId: callbackQuery.Message.Chat.Id,
-            videoNote: VideoFileIds.AlexeyGerasimovFileId,
-            cancellationToken: cancellationToken
-        );
+        try
+        {
+            await botClient.SendVideoNote(
+                chatId: callbackQuery.Message.Chat.Id,
+                videoNote: VideoFileIds.AlexeyGerasimovFileId,
+                cancellationToken: cancellationToken
+            );
 
-        await botClient.SendMessage(
-            chatId: callbackQuery.Message.Chat.Id,
-            text: PreboardingMessages.CompanyIntroVideoCaption,
-            parseMode: ParseMode.Html,
-            cancellationToken: cancellationToken
-        );
+            await botClient.SendMessage(
+                chatId: callbackQuery.Message.Chat.Id,
+                text: PreboardingMessages.CompanyIntroVideoCaption,
+                parseMode: ParseMode.Html,
+                cancellationToken: cancellationToken
+            );
+        }
+        catch ( Exception ex )
+        {
+            Console.WriteLine( $"CompanyIntro: не удалось отправить видео-кружок. {ex}" );
+        }
 
         for ( int i = 0; i < introMessages.Length; i++ )
         {
@@ -59,6 +71,7 @@ public class CompanyIntroHandler( UserService userService, CandidateService cand
                 action: ChatAction.Typing,
                 cancellationToken: cancellationToken
             );
+
             await Task.Delay( TimeSpan.FromSeconds( 4 ), cancellationToken );
 
             if ( isLast )
@@ -74,7 +87,10 @@ public class CompanyIntroHandler( UserService userService, CandidateService cand
                     text: introMessages[ i ],
                     replyMarkup: Inline.CompanyIntro(),
                     parseMode: ParseMode.Html,
-                    linkPreviewOptions: new LinkPreviewOptions { IsDisabled = true },
+                    linkPreviewOptions: new LinkPreviewOptions
+                    {
+                        IsDisabled = true
+                    },
                     cancellationToken: cancellationToken
                 );
             }
@@ -84,7 +100,10 @@ public class CompanyIntroHandler( UserService userService, CandidateService cand
                     chatId: callbackQuery.Message.Chat.Id,
                     text: introMessages[ i ],
                     parseMode: ParseMode.Html,
-                    linkPreviewOptions: new LinkPreviewOptions { IsDisabled = true },
+                    linkPreviewOptions: new LinkPreviewOptions
+                    {
+                        IsDisabled = true
+                    },
                     cancellationToken: cancellationToken
                 );
             }
